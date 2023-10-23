@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Setup
 
-## Getting Started
+1. Create and fill in `.env` using `.env.example` as an example.
 
-First, run the development server:
+2. Install required Python packages
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+pip install -r requirements.txt
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mac M1 / OS X Note: if you get an error installing psycopg2, you may need:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+brew install postgresql
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+See https://github.com/psycopg/psycopg2/issues/1200
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+3. Turn your PDF into embeddings for GPT-3:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+python scripts/pdf_to_pages_embeddings.py --pdf book.pdf
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+4. Set up database tables and collect static files:
 
-## Deploy on Vercel
+```
+python manage.py makemigrations
+python manage.py migrate
+python manage.py collectstatic
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Other things to update:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Book title
+- Book cover image
+- URL to purchase book
+- Author name and bio
+
+## Deploy to Heroku
+
+1. Create a Heroku app:
+
+```
+heroku create askmybook
+```
+
+Set config variables on Heroku to match your `.env`.
+
+2. Push to Heroku:
+
+```
+git push heroku main
+heroku ps:scale web=1
+heroku run python manage.py migrate
+heroku open
+heroku domains:add askmybook.com
+```
+
+### Run locally
+
+```
+source venv/source/activate
+pip install -r requirements.txt
+heroku local
+```
+
+Note: macOS Monterey uses port 5000 (the default port) for AirPlay sharing, so you will need to run heroku local on a different port. For example:
+
+```
+heroku local -p 5001
+```
+
+### Deploying
+
+Deploy to Heroku with:
+
+```
+git push heroku main --no-verify
+```
+
+`no-verify` is added due to using Git LFS for the large embedding file.
