@@ -103,9 +103,8 @@ export default function Home() {
                         <button disabled={isPending}
                             onClick={(e) => {
                                 if (!textAreaRef.current) { return; }
-
+                                // Change the value of the text area
                                 textAreaRef.current.value = luckyQuestions[Math.floor(Math.random() * luckyQuestions.length)];
-                                console.log(textAreaRef.current.value);
                             }}
                         >
                             I&apos;m feeling lucky

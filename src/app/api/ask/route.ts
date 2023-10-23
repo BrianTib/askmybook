@@ -19,6 +19,7 @@ export async function GET(request: Request ) {
             "Sec-Fetch-Site": "same-origin"
         },
         "referrer": "https://askmybook.com/",
+        // P.S. Not sure if generating a new token is necessary
         "body": `csrfmiddlewaretoken=${generateRandomToken()}&question=${prompt}`,
         "method": "POST",
         "mode": "cors"
