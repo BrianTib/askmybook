@@ -1,6 +1,9 @@
 # Run
 npm run dev
 
+# Example
+<img src="example.gif" />
+
 # Comments
 Instead of implementing the model locally, the backend makes a post request to askmybook.com and sends
 the new reply to the background
